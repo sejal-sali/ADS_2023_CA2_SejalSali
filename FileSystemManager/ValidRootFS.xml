@@ -1,0 +1,26 @@
+<dir>
+	<name>.git</name>
+	<file>
+		<name>config</name>
+		<length>353 b</length>
+		<type>config</type>
+	</file>
+	<file>
+		<name>description</name>
+		<length>73 b</length>
+		<type>description</type>
+	</file>
+</dir>
+<dir>
+	<name>.maven</name>
+	<file>
+		<name>config</name>
+		<length>354 b</length>
+		<type>config</type>
+	</file>
+	<file>
+		<name>description</name>
+		<length>74 b</length>
+		<type>description</type>
+	</file>
+</dir>
