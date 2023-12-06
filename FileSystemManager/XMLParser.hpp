@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 class XMLParser {
 public:
@@ -19,5 +20,12 @@ public:
     bool hasValidFsStructure();
 
 private:
+
+    //using stack this function validates the correctness of each xml elements
+    bool hasClosingTags(const std::string& xmlContents);
+
+
+    //these are the data members
     const std::string xmlFilePath_;
+    std::ifstream xmlFileStream_;
 };

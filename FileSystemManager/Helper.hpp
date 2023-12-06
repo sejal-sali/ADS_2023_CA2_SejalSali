@@ -7,6 +7,6 @@
 
 void LOG_MESSAGE(const std::string& message);
     
-
+std::string trim(const std::string& str);
 
 #endif

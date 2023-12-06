@@ -7,11 +7,27 @@
 void FileSystemTests::runXMLvalidationTests() {
     // Negative Test cases 
     // Validate if the root is invalid 
-    XMLParser xmlParser("tests/invalidRoot.xml");
-    if (!xmlParser.hasValidRootDirectory()) {
-        LOG_MESSAGE("invalidRoot test failed !");
+    {
+        XMLParser xmlParser("ValidRootFS.xml");
+        if (!xmlParser.hasValidRootDirectory()) {
+            LOG_MESSAGE("invalidRoot test failed !");
+        }
+    }
+    //test Case 2
+    {
+        XMLParser xmlParser("ValidRootFS.xml");
+        if (!xmlParser.hasValidFsElements()) {
+            LOG_MESSAGE("invalidRoot test failed !");
+        }
     }
 
+    //test Case 3
+    {
+        XMLParser xmlParser("ValidRootFS.xml");
+        if (!xmlParser.hasValidFsStructure()) {
+            LOG_MESSAGE("invalid FS failed");
+        }
+    }
 
     // Positive Test cases 
     // validateXML("tests/validRoot.xml", true /*pass*/);
