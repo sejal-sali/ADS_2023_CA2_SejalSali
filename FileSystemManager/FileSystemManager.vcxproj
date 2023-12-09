@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="FileSystemTests.hpp" />
+    <ClInclude Include="FSTreeNode.hpp" />
     <ClInclude Include="Helper.hpp" />
     <ClInclude Include="XMLParser.hpp" />
   </ItemGroup>
@@ -138,6 +139,7 @@
     <ClCompile Include="XMLParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="completeSample.xml" />
     <Xml Include="ValidRootFS.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

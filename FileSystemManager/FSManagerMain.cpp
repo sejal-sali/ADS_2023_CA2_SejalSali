@@ -1,5 +1,6 @@
 #include "Helper.hpp"
 #include "FileSystemTests.hpp"
+#include "XMLParser.hpp"
 
 int main(int argc, char** argv)
 {
@@ -7,5 +8,20 @@ int main(int argc, char** argv)
 	FileSystemTests fsTests;
 	fsTests.runXMLvalidationTests();
 
-	return 0;
+	if (argc == 2)
+	{
+		XMLParser xmlParser(argv[1]);
+		auto fsTree = xmlParser.buildFSTree();
+		if (fsTree == nullptr)
+		{
+			LOG_MESSAGE("Invaild XML File provided !!!");
+		}
+		else
+		{
+			LOG_MESSAGE("Given File system structure is valid");
+		}
+	}
+	
+
+    return 0;
 }

@@ -26,7 +26,6 @@ bool XMLParser::hasValidRootDirectory() {
     if (std::getline(xmlFileStream_, firstLine))
     {
         std::string trimmedLine = trim(firstLine);
-        LOG_MESSAGE("line=>"+trimmedLine);
         // Check if it is a directory then read the next line as name 
         if (trimmedLine == "<dir>")
         {
@@ -51,11 +50,9 @@ bool XMLParser::hasValidFsElements() {
     return hasClosingTags(xmlContents);
 }
 
-
 bool XMLParser::hasValidFsStructure() {
     // stubs 
 
-    
     if (!hasValidFsElements())
     {
         LOG_MESSAGE("Input file doesnot have valid XML Elements");
@@ -63,12 +60,26 @@ bool XMLParser::hasValidFsStructure() {
     }
 
     xmlFileStream_.seekg(0, std::ios::beg);
+    FSTreeNode* rootTree = buildFSTreeImpl();
+    if (rootTree == nullptr)
+    {
+        return false;
+    }
 
-    LOG_MESSAGE("XML has valid FS Elements");
+    return true; 
+}
 
+FSTreeNode* XMLParser::buildFSTreeImpl() {
+
+    FSTreeNode* rootNode = nullptr;
+    FSTreeNode* currDirNode = nullptr;
+
+    // declares the regular expression to read name, length and
+    // file type of a tree node.
     std::regex nameRegex("<name>(.*?)</name>");
-    std::regex lengthRegex("<length>(.*?)</length>");
+    std::regex lengthRegex("<length>(\\d+)\\s*\\w*</length>");
     std::regex fileTypeRegex("<type>(.*?)</type>");
+
     std::string line;
     int numDirectoriesStarted = 0;
     int numDirectoriesEnded = 0;
@@ -77,37 +88,42 @@ bool XMLParser::hasValidFsStructure() {
 
     while (std::getline(xmlFileStream_, line)) {
         std::string trimmedLine = trim(line);
+        std::string nestedLine;
 
         // Check if it is a directory then read the next line as name 
         if (trimmedLine == "<dir>") {
-            //printMe("Directory Started !");
             numDirectoriesStarted++;
-#if 0
-            std::string nestedLine;
-            // Go ahead and read the name of the directory ? 
             if (std::getline(xmlFileStream_, nestedLine)) {
                 std::string trimmedLine = trim(nestedLine);
                 std::smatch match;
                 if (std::regex_search(trimmedLine, match, nameRegex)) {
-                    std::string fileName = match[1].str();
-                    printMe("DirName=" + fileName);
-                }
-            }
-#endif
-        }
+                    std::string dirName = match[1].str();
+                    FSTreeNode* dirNode = createFSTreeNode(dirName, FSNodeType::DIRECTORY_NODE);
+                    dirNode->setParent(currDirNode);
+                    if (currDirNode != nullptr) {
+                        currDirNode->addChild(dirNode); // insert as a child 
+                    }
 
+                    //now the created node becomes the current node to add its children
+                    currDirNode = dirNode;
+                    if (rootNode == nullptr) {
+                        // Initialize the root node here only ONCE
+                        rootNode = currDirNode;
+                    }
+                }
+            }  
+        }
         else if (trimmedLine == "<file>") {
-            //printMe("File Started !");
             numFilesStarted++;
-            std::string nestedLine;
-            int nameFound = 0;
-            int lengthFound = 0;
-            int fileTypeFound = 0;
+
+            std::string fileName;
+            int fileLength;
+            std::string fileExtensionType;
+
             int invalidElement = 0;
 
             while (std::getline(xmlFileStream_, nestedLine)) {
                 std::string trimmedLine = trim(nestedLine);
-                LOG_MESSAGE("Printing trimline = " + trimmedLine);
                 if (trimmedLine == "</file>")
                 {
                     numFilesEnded++;
@@ -116,39 +132,48 @@ bool XMLParser::hasValidFsStructure() {
 
                 std::smatch match;
                 if (std::regex_search(trimmedLine, match, nameRegex)) {
-                    nameFound++;
+                    fileName = match[1].str();
                 }
                 else if (std::regex_search(trimmedLine, match, lengthRegex)) {
-                    lengthFound++;
+                    std::string fileLengthStringValue = match[1].str();
+                    fileLength = std::stoi(fileLengthStringValue);
                 }
                 else if (std::regex_search(trimmedLine, match, fileTypeRegex)) {
-                    fileTypeFound++;
+                    fileExtensionType = match[1].str();
                 }
                 else {
                     invalidElement = 1;
-                    LOG_MESSAGE("Invalid Element found " + trimmedLine);
                     break;
                 }
             }
 
             if (invalidElement) {
                 LOG_MESSAGE("Invalid Element Found = " + nestedLine);
-                return false;
+                return nullptr;
             }
-        }
-        else if (trimmedLine == "</file>") {
-            //printMe("File ended !");
-            numFilesEnded++;
+
+            // Make a file Node 
+            FSTreeNode* fileNode = createFSTreeNode(fileName, FSNodeType::FILE_NODE);
+            fileNode->setFileExtension(fileExtensionType);
+            fileNode->setFileLength(fileLength);
+            currDirNode->addChild(fileNode);
         }
         else if (trimmedLine == "</dir>") {
-            //printMe("Directory Ended !");
             numDirectoriesEnded++;
+            if (currDirNode->getParent())
+                currDirNode = currDirNode->getParent();
+            // Reset back the level of the directory to the parent one now
         }
     }
     LOG_MESSAGE("DirStarted=" + std::to_string(numDirectoriesStarted) + ", dirEnded=" + std::to_string(numDirectoriesEnded));
     LOG_MESSAGE("fileStarted=" + std::to_string(numFilesStarted) + ", fileEnded=" + std::to_string(numFilesEnded));
 
-    return (numDirectoriesStarted== numDirectoriesEnded && numFilesStarted == numFilesEnded);
+    if (numDirectoriesStarted == numDirectoriesEnded && numFilesStarted == numFilesEnded)
+    {
+        return rootNode;
+    }
+
+    return nullptr;
 }
 
 
@@ -192,3 +217,21 @@ bool XMLParser::hasClosingTags(const std::string& xml) {
     // If the stack is empty, all tags were properly closed
     return tagStack.empty();
 }
+
+
+FSTreeNode* XMLParser::createFSTreeNode(const std::string& name, FSNodeType type)
+{
+    return new FSTreeNode(name, type);
+}
+
+FSTreeNode* XMLParser::buildFSTree()
+{
+    if (!xmlFileStream_.is_open()) {
+        LOG_MESSAGE("Failed to open the file!");
+        return nullptr;
+    }
+    xmlFileStream_.seekg(0, std::ios::beg);
+
+    return buildFSTreeImpl();
+}
+

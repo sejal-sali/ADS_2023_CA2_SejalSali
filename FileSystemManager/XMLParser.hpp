@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include "FSTreeNode.hpp"
 
 class XMLParser {
+
 public:
     XMLParser(const std::string& xmlFilePath);
 
@@ -19,13 +21,23 @@ public:
     // only directory can hold other nested directories 
     bool hasValidFsStructure();
 
+    // build the complete File System Tree including the validation
+    FSTreeNode* buildFSTree();
+
 private:
+
+    // this function is responsible for building the complete 
+    // FS Layot tree.
+    FSTreeNode* buildFSTreeImpl();
+    FSTreeNode* createFSTreeNode(const std::string& name, FSNodeType type);
 
     //using stack this function validates the correctness of each xml elements
     bool hasClosingTags(const std::string& xmlContents);
-
+    
 
     //these are the data members
     const std::string xmlFilePath_;
     std::ifstream xmlFileStream_;
+
+
 };

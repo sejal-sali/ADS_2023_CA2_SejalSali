@@ -29,6 +29,20 @@ void FileSystemTests::runXMLvalidationTests() {
         }
     }
 
+    //test Case 4
+    {
+        XMLParser xmlParser("CompleteSample.xml");
+        auto fsTree = xmlParser.buildFSTree();
+        if (fsTree == nullptr)
+        {
+            LOG_MESSAGE("Test Failed to Build File System Tree !!!");
+        }
+        else
+        {
+            LOG_MESSAGE("File System Tree Succesfully Built");
+        }
+    }
+
     // Positive Test cases 
     // validateXML("tests/validRoot.xml", true /*pass*/);
     // validateXML("tests/validFsStructure.xml", true /*pass*/);
