@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 
 	// Stage 2 functions would be called here 
 	// Function 1
-	fsManager.showDirectoryElements("passDirectoryName");
+	fsManager.showDirectoryElements(".maven");
 
 	
     return 0;

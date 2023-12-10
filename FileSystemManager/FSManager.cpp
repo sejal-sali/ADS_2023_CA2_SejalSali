@@ -20,15 +20,40 @@ void FSManager::initialize() {
 }
 
 std::vector<std::string> FSManager::showDirectoryElements(const std::string& dirname) {
-	// This will search the elemnts 
-	std::vector<std::string> returnElements = {};
-	// This is a stubs 
-	LOG_MESSAGE("Number of elements found in a directory=" + returnElements.size());
+	std::vector<std::string> returnElements;
+
+	auto findDirNode = searchNode(fsRoot_, dirname);
+	if (findDirNode == nullptr) {
+		LOG_MESSAGE("Given dirname NOT FOUND !");
+		return returnElements;
+	}
+
+	for (const auto& child : findDirNode->getChildren()) {
+		returnElements.push_back(child->getName());
+	}
+
+	LOG_MESSAGE("Total Elements =" + std::to_string(returnElements.size()));
 	return returnElements;
 }
 
-FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& searchName) {
-	// stubs 
+FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& searchName) { 
+	if (currentNode == nullptr) {
+		return nullptr;
+	}
+
+	if (currentNode->getName() == searchName) {
+		return currentNode;
+	}
+
+	// Look 'searchName' into it's children
+	for (const auto& child : currentNode->getChildren()) {
+		auto fsTreeNode = searchNode(child, searchName);
+		if (fsTreeNode != nullptr) {
+			return fsTreeNode;
+		}
+	}
+
+	// In my own depth of the tree; I have not found searchName;
 	return nullptr;
 }
 

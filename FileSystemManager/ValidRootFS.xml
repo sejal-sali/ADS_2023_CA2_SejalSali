@@ -26,5 +26,8 @@
 			<length>74 b</length>
 			<type>description</type>
 		</file>
+		<dir>
+			<name>emptyDirectory</name>
+		</dir>
 	</dir>
 </dir>
