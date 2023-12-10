@@ -27,6 +27,9 @@
     <ClInclude Include="FSTreeNode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FSManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileSystemTests.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FSManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

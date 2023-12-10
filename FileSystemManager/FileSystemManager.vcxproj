@@ -128,12 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="FileSystemTests.hpp" />
+    <ClInclude Include="FSManager.hpp" />
     <ClInclude Include="FSTreeNode.hpp" />
     <ClInclude Include="Helper.hpp" />
     <ClInclude Include="XMLParser.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileSystemTests.cpp" />
+    <ClCompile Include="FSManager.cpp" />
     <ClCompile Include="FSManagerMain.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="XMLParser.cpp" />

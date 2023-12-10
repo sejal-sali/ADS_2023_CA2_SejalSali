@@ -1,6 +1,7 @@
 #include "Helper.hpp"
 #include "FileSystemTests.hpp"
 #include "XMLParser.hpp"
+#include "FSManager.hpp"
 
 int main(int argc, char** argv)
 {
@@ -8,20 +9,13 @@ int main(int argc, char** argv)
 	FileSystemTests fsTests;
 	fsTests.runXMLvalidationTests();
 
-	if (argc == 2)
-	{
-		XMLParser xmlParser(argv[1]);
-		auto fsTree = xmlParser.buildFSTree();
-		if (fsTree == nullptr)
-		{
-			LOG_MESSAGE("Invaild XML File provided !!!");
-		}
-		else
-		{
-			LOG_MESSAGE("Given File system structure is valid");
-		}
-	}
-	
+	FSManager fsManager("ValidRootFS.xml");
+	fsManager.initialize();
 
+	// Stage 2 functions would be called here 
+	// Function 1
+	fsManager.showDirectoryElements("passDirectoryName");
+
+	
     return 0;
 }

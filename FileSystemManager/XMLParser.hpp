@@ -2,6 +2,9 @@
 #include <fstream>
 #include "FSTreeNode.hpp"
 
+#ifndef XML_PARSER_HEADER_H
+#define XML_PARSER_HEADER_H
+
 class XMLParser {
 
 public:
@@ -41,3 +44,5 @@ private:
 
 
 };
+
+#endif
