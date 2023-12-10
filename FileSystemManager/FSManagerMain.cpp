@@ -19,6 +19,9 @@ int main(int argc, char** argv)
 	// function 2 
 	int totalMemory = fsManager.getTotalMemorySize(".maven");
 	LOG_MESSAGE("Total Memory required for a dir=" + std::to_string(totalMemory));
+
+	// print entire FS tree 
+	fsManager.searchAndPrintDirectoryContents(".maven");
 	
     return 0;
 }

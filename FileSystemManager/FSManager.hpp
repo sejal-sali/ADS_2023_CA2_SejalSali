@@ -29,6 +29,10 @@ public:
     // This function is responsible in showing the current view 
     void viewFS();
 
+    void printView(FSTreeNode* treeNode);
+
+    void searchAndPrintDirectoryContents(const std::string& dirName);
+
     // This function will be purging the empty directories in case 
     // those directories exists in the FS Tree 
     void purgeEmptyDirectories();

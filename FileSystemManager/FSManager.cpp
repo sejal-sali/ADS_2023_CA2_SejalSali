@@ -91,8 +91,55 @@ int FSManager::getTotalMemorySize(const std::string& dirname) {
 }
 
 void FSManager::viewFS() {
-	// stubs 
 	LOG_MESSAGE("This presents the current FS view !");
+	printView(fsRoot_);
+}
+
+void FSManager::searchAndPrintDirectoryContents(const std::string& dirName) {
+	auto fsTreeNode = searchNode(fsRoot_, dirName);
+	if (fsTreeNode != nullptr) {
+		printView(fsTreeNode);
+	}
+	else {
+		LOG_MESSAGE("Directory Not found !");
+	}
+}
+
+void FSManager::printView(FSTreeNode* treeNode) {
+	static int tabCount = 1;
+	if (treeNode == nullptr) {
+		--tabCount;
+		return;
+	}
+
+	auto printTabs = [&]() -> std::string {
+		std::string tabIndent = "";
+		for (int index = 0; index < tabCount; ++index) {
+			tabIndent += "-";
+		}
+		return tabIndent;
+	};
+
+	// Process the current node
+	if (treeNode->getNodeType() == FSNodeType::FILE_NODE) {
+	
+		LOG_MESSAGE(printTabs()+" name="+ treeNode->getName()+" legnth="+
+			std::to_string(treeNode->getFileLength()));
+	}
+	else {
+		LOG_MESSAGE(printTabs()+ " dirName="+treeNode->getName());
+	}
+
+	// Recursively traverse children
+	for (const auto& child : treeNode->getChildren()) {
+		// (child->getNodeType() == FSNodeType::DIRECTORY_NODE) {
+			++tabCount;
+		//}
+		printView(child);
+	}
+
+	--tabCount;
+	return;
 }
 
 void FSManager::purgeEmptyDirectories() {
