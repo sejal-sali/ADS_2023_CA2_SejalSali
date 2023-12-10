@@ -27,7 +27,12 @@
 			<type>description</type>
 		</file>
 		<dir>
-			<name>emptyDirectory</name>
+			<name>additional_dir</name>
+			<file>
+				<name>readme</name>
+				<length>1028 b</length>
+				<type>txt</type>
+			</file>
 		</dir>
 	</dir>
 </dir>

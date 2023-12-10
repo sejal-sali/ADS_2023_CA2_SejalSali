@@ -1,5 +1,6 @@
 #include "FSManager.hpp"
 #include "Helper.hpp"
+#include <queue>
 
 FSManager::FSManager(const std::string& fileName) 
 	: fsFileName_(fileName), fsRoot_(nullptr) {}
@@ -58,9 +59,35 @@ FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& se
 }
 
 int FSManager::getTotalMemorySize(const std::string& dirname) {
-	// stubs 
-	int totalMemorySize = 0;
-	return totalMemorySize;
+	int totalFileSize = 0;
+
+	// Lets find the dirName 
+	auto fsTreeNode = searchNode(fsRoot_, dirname);
+	if (fsTreeNode == nullptr) {
+		return totalFileSize;
+	}
+
+	std::queue<FSTreeNode*> q;
+	q.push(fsTreeNode);
+
+	while (!q.empty()) {
+		FSTreeNode* current = q.front();
+		q.pop();
+
+
+		// Enqueue children of the current node
+		for (FSTreeNode* child : current->getChildren()) {
+			if (child->getNodeType() == FSNodeType::DIRECTORY_NODE) {
+				q.push(child);
+			}
+			else {
+				// Process the current FILE NODE 
+				totalFileSize += child->getFileLength();
+			}
+		}
+	}
+
+	return totalFileSize;
 }
 
 void FSManager::viewFS() {
