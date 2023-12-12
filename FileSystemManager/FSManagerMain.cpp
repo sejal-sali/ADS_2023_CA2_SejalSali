@@ -20,8 +20,22 @@ int main(int argc, char** argv)
 	int totalMemory = fsManager.getTotalMemorySize(".maven");
 	LOG_MESSAGE("Total Memory required for a dir=" + std::to_string(totalMemory));
 
-	// print entire FS tree 
+	// print entire FS tree for the searched element - function e
 	fsManager.searchAndPrintDirectoryContents(".maven");
+
+	// print entire FS Tree from the root 
+	LOG_MESSAGE("Print The complete FS Tree =>");
+	fsManager.printFileSystem();
+
+	// print filepath - function d
+	auto filePath = fsManager.findCompletePath("readme");
+	LOG_MESSAGE("FilePath for readme=>"+filePath);
 	
+	// Function d is searching for a partial file name 
+	auto filePath = fsManager.findCompletePath("read");
+	LOG_MESSAGE("FilePath for readme=>" + filePath);
+
+	// Function c : Purge the empty directories 
+
     return 0;
 }

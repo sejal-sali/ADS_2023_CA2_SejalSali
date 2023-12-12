@@ -44,8 +44,8 @@ public:
         return children;
     }
 
-    void setParent(FSTreeNode* parent) {
-        parent = parent;
+    void setParent(FSTreeNode* inParent) {
+        parent = inParent;
     }
 
     FSTreeNode* getParent() {

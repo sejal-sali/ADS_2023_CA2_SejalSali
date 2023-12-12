@@ -156,6 +156,7 @@ FSTreeNode* XMLParser::buildFSTreeImpl() {
             FSTreeNode* fileNode = createFSTreeNode(fileName, FSNodeType::FILE_NODE);
             fileNode->setFileExtension(fileExtensionType);
             fileNode->setFileLength(fileLength);
+            fileNode->setParent(currDirNode);
             currDirNode->addChild(fileNode);
         }
         else if (trimmedLine == "</dir>") {

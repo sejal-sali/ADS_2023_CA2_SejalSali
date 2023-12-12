@@ -37,13 +37,21 @@ std::vector<std::string> FSManager::showDirectoryElements(const std::string& dir
 	return returnElements;
 }
 
-FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& searchName) { 
+FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& searchName, 
+	bool partialSearch) { 
 	if (currentNode == nullptr) {
 		return nullptr;
 	}
 
 	if (currentNode->getName() == searchName) {
 		return currentNode;
+	}
+
+	// If the partialSearch is enabled then search substring 
+	if (partialSearch) {
+		if (currentNode->getName().find(searchName) != std::string::npos) {
+			return currentNode;
+		}
 	}
 
 	// Look 'searchName' into it's children
@@ -90,56 +98,76 @@ int FSManager::getTotalMemorySize(const std::string& dirname) {
 	return totalFileSize;
 }
 
-void FSManager::viewFS() {
-	LOG_MESSAGE("This presents the current FS view !");
-	printView(fsRoot_);
-}
 
 void FSManager::searchAndPrintDirectoryContents(const std::string& dirName) {
 	auto fsTreeNode = searchNode(fsRoot_, dirName);
 	if (fsTreeNode != nullptr) {
-		printView(fsTreeNode);
+		printFileSystem(fsTreeNode);
 	}
 	else {
 		LOG_MESSAGE("Directory Not found !");
 	}
 }
 
-void FSManager::printView(FSTreeNode* treeNode) {
-	static int tabCount = 1;
-	if (treeNode == nullptr) {
-		--tabCount;
+std::string FSManager::findCompletePath(const std::string& fileName) {
+	auto fsTreeNode = searchNode(fsRoot_, fileName, true);
+	if (fsTreeNode->getNodeType() != FSNodeType::FILE_NODE) {
+		LOG_MESSAGE("Provide file name instead of directory name !");
+		return "";
+	}
+
+	// Now build the path 
+	std::string filePath = "";
+
+	if (fsTreeNode != nullptr) {
+
+		while (fsTreeNode != nullptr) {
+			filePath = fsTreeNode->getName() + filePath;
+			if (fsTreeNode->getParent()) {
+				filePath = "/" + filePath;
+			}
+
+			fsTreeNode = fsTreeNode->getParent();
+		}
+	}
+
+	return filePath;
+}
+
+std::string FSManager::getTabIndents(int tabCount) {
+	std::string tabIndents = "|";
+	for (int index = 0; index < tabCount; ++index) {
+		tabIndents += "----";
+	}
+	return tabIndents;
+}
+
+void FSManager::printFileSystem(FSTreeNode* fsTreeNode) {
+	static int tabCount = 0;
+	if (fsTreeNode == nullptr) {
 		return;
 	}
 
-	auto printTabs = [&]() -> std::string {
-		std::string tabIndent = "";
-		for (int index = 0; index < tabCount; ++index) {
-			tabIndent += "-";
-		}
-		return tabIndent;
-	};
-
-	// Process the current node
-	if (treeNode->getNodeType() == FSNodeType::FILE_NODE) {
-	
-		LOG_MESSAGE(printTabs()+" name="+ treeNode->getName()+" legnth="+
-			std::to_string(treeNode->getFileLength()));
+	if (fsTreeNode->getNodeType() == FSNodeType::FILE_NODE) {
+		LOG_MESSAGE(getTabIndents(tabCount) + fsTreeNode->getName() +
+			"(" + std::to_string(fsTreeNode->getFileLength()) + ")");
 	}
 	else {
-		LOG_MESSAGE(printTabs()+ " dirName="+treeNode->getName());
+		// print directory
+		LOG_MESSAGE(getTabIndents(tabCount) + fsTreeNode->getName());
 	}
 
 	// Recursively traverse children
-	for (const auto& child : treeNode->getChildren()) {
-		// (child->getNodeType() == FSNodeType::DIRECTORY_NODE) {
-			++tabCount;
-		//}
-		printView(child);
+	for (const auto& child : fsTreeNode->getChildren()) {
+		tabCount++;
+		printFileSystem(child);
 	}
 
 	--tabCount;
-	return;
+}
+
+void FSManager::printFileSystem() {
+	printFileSystem(fsRoot_);
 }
 
 void FSManager::purgeEmptyDirectories() {
