@@ -49,6 +49,7 @@ FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& se
 
 	// If the partialSearch is enabled then search substring 
 	if (partialSearch) {
+		// LOG_MESSAGE(currentNode->getName() + " searching for =" + searchName);
 		if (currentNode->getName().find(searchName) != std::string::npos) {
 			return currentNode;
 		}
@@ -56,7 +57,7 @@ FSTreeNode* FSManager::searchNode(FSTreeNode* currentNode, const std::string& se
 
 	// Look 'searchName' into it's children
 	for (const auto& child : currentNode->getChildren()) {
-		auto fsTreeNode = searchNode(child, searchName);
+		auto fsTreeNode = searchNode(child, searchName, partialSearch);
 		if (fsTreeNode != nullptr) {
 			return fsTreeNode;
 		}
