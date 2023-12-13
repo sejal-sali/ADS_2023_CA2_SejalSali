@@ -1,6 +1,7 @@
 #include "Helper.hpp"
 #include "FileSystemTests.hpp"
 #include "XMLParser.hpp"
+#include "FSManager.hpp"
 
 
 
@@ -42,6 +43,33 @@ void FileSystemTests::runXMLvalidationTests() {
             LOG_MESSAGE("File System Tree Succesfully Built");
         }
     }
+
+
+    //test Case for FS Manager
+    {
+        FSManager fsManager("ValidRootFS.xml");
+        fsManager.initialize();
+        fsManager.searchAndPrintDirectoryContents("emptydirectory");
+        fsManager.purgeEmptyDirectories();
+        fsManager.searchAndPrintDirectoryContents("emptydirectory");
+    }
+
+    //test case for FS file path validation
+    {
+        FSManager fsManager("ValidRootFS.xml");
+        fsManager.initialize();
+        auto filePath = fsManager.findCompletePath("readme");
+        if (filePath == "ADS_Single_LinkedList_Exercises/.maven/additional_dir/readme")
+        {
+            LOG_MESSAGE("File path sucessfully found");
+        }
+        else
+        {
+            LOG_MESSAGE("File path not found !!!");
+        }
+    }
+
+
 
     // Positive Test cases 
     // validateXML("tests/validRoot.xml", true /*pass*/);
