@@ -32,10 +32,13 @@ int main(int argc, char** argv)
 	LOG_MESSAGE("FilePath for readme=>"+filePath);
 	
 	// Function d is searching for a partial file name 
-	auto filePath = fsManager.findCompletePath("read");
-	LOG_MESSAGE("FilePath for readme=>" + filePath);
+	auto newFilePath = fsManager.findCompletePath("read");
+	LOG_MESSAGE("FilePath for patial readme=>" + newFilePath);
 
 	// Function c : Purge the empty directories 
+	fsManager.purgeEmptyDirectories();
+	LOG_MESSAGE("Print The complete FS Tree after purging empty directories =>");
+	fsManager.printFileSystem();
 
     return 0;
 }

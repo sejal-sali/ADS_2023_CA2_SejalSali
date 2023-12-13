@@ -102,7 +102,7 @@ int FSManager::getTotalMemorySize(const std::string& dirname) {
 void FSManager::searchAndPrintDirectoryContents(const std::string& dirName) {
 	auto fsTreeNode = searchNode(fsRoot_, dirName);
 	if (fsTreeNode != nullptr) {
-		printFileSystem(fsTreeNode);
+		printFileSystem(fsTreeNode, 0);
 	}
 	else {
 		LOG_MESSAGE("Directory Not found !");
@@ -111,6 +111,13 @@ void FSManager::searchAndPrintDirectoryContents(const std::string& dirName) {
 
 std::string FSManager::findCompletePath(const std::string& fileName) {
 	auto fsTreeNode = searchNode(fsRoot_, fileName, true);
+	
+	if (fsTreeNode == nullptr)
+	{
+		LOG_MESSAGE("Provided File name not found!!!");
+		return "";
+	}
+
 	if (fsTreeNode->getNodeType() != FSNodeType::FILE_NODE) {
 		LOG_MESSAGE("Provide file name instead of directory name !");
 		return "";
@@ -142,8 +149,8 @@ std::string FSManager::getTabIndents(int tabCount) {
 	return tabIndents;
 }
 
-void FSManager::printFileSystem(FSTreeNode* fsTreeNode) {
-	static int tabCount = 0;
+void FSManager::printFileSystem(FSTreeNode* fsTreeNode, int tabCount) {
+
 	if (fsTreeNode == nullptr) {
 		return;
 	}
@@ -160,17 +167,41 @@ void FSManager::printFileSystem(FSTreeNode* fsTreeNode) {
 	// Recursively traverse children
 	for (const auto& child : fsTreeNode->getChildren()) {
 		tabCount++;
-		printFileSystem(child);
+		printFileSystem(child, tabCount);
 	}
 
 	--tabCount;
 }
 
 void FSManager::printFileSystem() {
-	printFileSystem(fsRoot_);
+	printFileSystem(fsRoot_, 0);
 }
 
 void FSManager::purgeEmptyDirectories() {
-	// stubs
-	LOG_MESSAGE("This would purge the empty directories !");
+	purgeEmptyDirectories(fsRoot_);
+}
+
+// This is a recursive function in DFS form
+void FSManager::purgeEmptyDirectories(FSTreeNode* fsTreeNode) {
+	// Find the directory which is empty and then just drop it
+	// remove it from it's parent's child vector 
+	if (fsTreeNode == nullptr) {
+		return;
+	}
+
+	// Recursively traverse children
+	auto& children = fsTreeNode->getChildrenRef();
+	for (auto childIt = children.begin(); childIt != children.end();) {
+		if ((*childIt)->getNodeType() == FSNodeType::DIRECTORY_NODE) {
+			auto childrenSize = (*childIt)->getChildren().size();
+			if (childrenSize == 0) {
+				delete* childIt;
+				childIt = children.erase(childIt);
+				continue;
+			}
+		}
+
+		purgeEmptyDirectories(*childIt);
+		childIt++;
+	}
 }

@@ -34,5 +34,8 @@
 				<type>txt</type>
 			</file>
 		</dir>
+		<dir>
+			<name>emptydirectory</name>
+		</dir>
 	</dir>
 </dir>

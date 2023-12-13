@@ -40,8 +40,9 @@ public:
     void purgeEmptyDirectories();
 
 private: 
-    void printFileSystem(FSTreeNode* fsTreeNode);
+    void printFileSystem(FSTreeNode* fsTreeNode, int tabCount);
     std::string getTabIndents(int tabCount);
+    void purgeEmptyDirectories(FSTreeNode* fsTreeNode);
 
 private:
     // No element we are stroing 

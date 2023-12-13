@@ -117,7 +117,7 @@ FSTreeNode* XMLParser::buildFSTreeImpl() {
             numFilesStarted++;
 
             std::string fileName;
-            int fileLength;
+            int fileLength = 0;
             std::string fileExtensionType;
 
             int invalidElement = 0;

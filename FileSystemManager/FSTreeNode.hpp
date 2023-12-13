@@ -56,6 +56,21 @@ public:
         children.push_back(node);
     }
 
+    // This returns the vector ref for the children
+    std::vector<FSTreeNode*>& getChildrenRef() {
+        return children;
+    }
+
+    void removeChild(const std::string& dirName) {
+        for (auto it = children.begin(); it != children.end(); ++it) {
+            if ((*it)->getName() == dirName) {
+                // Free memory for the child node
+                delete* it;
+                children.erase(it);
+            }
+        }
+    }
+
 private:
    // FSTreeNode();
 
